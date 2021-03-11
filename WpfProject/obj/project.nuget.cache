@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "34fMMo6aMzOxel+aPNpq7D5/uXRiNf436imEVXEJ2jgxMbmmq/DlR5gZzLvbooyXcT7OR1kIBVCbRHZoM5Egfg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Carbonowy\\source\\repos\\WpfProject\\WpfProject\\Biometria.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Carbonowy\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
+    "C:\\Users\\Carbonowy\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
+    "C:\\Users\\Carbonowy\\.nuget\\packages\\system.drawing.common\\5.0.2\\system.drawing.common.5.0.2.nupkg.sha512"
+  ],
+  "logs": []
+}
