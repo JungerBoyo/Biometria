@@ -7,6 +7,7 @@ using System.Text;
 using System.Transactions;
 using System.Windows.Automation.Peers;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using System.Xml.Schema;
 
 namespace WpfProject
@@ -16,16 +17,16 @@ namespace WpfProject
 
         static public Bitmap GrayScale(Bitmap bmp, PixelFormat format)
         {
-            int frmNumber = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
+            int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
 
             BitmapData readwrite = BitmapsHandler.LockBits(bmp, ImageLockMode.ReadWrite);
 
             byte* ptr01 = (byte*)readwrite.Scan0.ToPointer();
 
-            int stride = readwrite.Stride;
-            int bitmapLength = bmp.Height * frmNumber * bmp.Width;
+            int width = readwrite.Stride;
+            int bitmapLength = bmp.Height * width;
 
-            for (int i = 0; i < bitmapLength; i+=frmNumber)                 
+            for (int i = 0; i < bitmapLength; i+=stride)                 
                 ptr01[i] = ptr01[i + 1] = ptr01[i + 2] = (byte)((ptr01[i] + ptr01[i + 1] + ptr01[i + 2]) / 3);
             
 
@@ -35,7 +36,7 @@ namespace WpfProject
 
         static public Bitmap OtsuBinarizationWCV(Bitmap bmp, PixelFormat format)
         {
-            int pixelFrmTrait = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
+            int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
 
             bmp = GrayScale(bmp, format);
 
@@ -43,13 +44,13 @@ namespace WpfProject
 
             byte* ptr = (byte*)readwrite.Scan0.ToPointer();
 
-            int stride = readwrite.Stride;
-            int bitmapLength = readwrite.Height * pixelFrmTrait * readwrite.Width;
+            int width = readwrite.Stride;
+            int bitmapLength = readwrite.Height * stride * readwrite.Width;
 
             // Step 1 Creating and filling pixel values histogram
             int[] pixelValuesHistogram = new int[256];
 
-            for (int i = 0; i < bitmapLength; i += pixelFrmTrait)
+            for (int i = 0; i < bitmapLength; i += stride)
                 pixelValuesHistogram[(int)ptr[i]]++;
 
             // Step 2 Computing within class variance for every possible threshold
@@ -113,7 +114,7 @@ namespace WpfProject
 
         static public Bitmap OtsuBinarizationBCV(Bitmap bmp, PixelFormat format)
         {
-            int pixelFrmTrait = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
+            int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
 
             bmp = GrayScale(bmp, format);
 
@@ -121,13 +122,13 @@ namespace WpfProject
 
             byte* ptr = (byte*)readwrite.Scan0.ToPointer();
 
-            int stride = readwrite.Stride;
-            int bitmapLength = readwrite.Height * pixelFrmTrait* readwrite.Width;
+            int width = readwrite.Stride;
+            int bitmapLength = readwrite.Height * stride* readwrite.Width;
 
             // Step 1 Creating and filling pixel values histogram
             int[] pixelValuesHistogram = new int[256];
 
-            for (int i = 0; i < bitmapLength; i += pixelFrmTrait)
+            for (int i = 0; i < bitmapLength; i += stride)
                 pixelValuesHistogram[(int)ptr[i]]++;
 
             int weightedHistogramSum = 0;
@@ -169,7 +170,7 @@ namespace WpfProject
     
         static public Bitmap Blurr(Bitmap bmp, PixelFormat format)
         {
-            int pixelFrmTrait = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
+            int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
 
             BitmapData readBmp = BitmapsHandler.LockBits(bmp, ImageLockMode.ReadOnly, format);
             Bitmap blankBmp = new Bitmap(bmp.Width, bmp.Height, format);
@@ -178,16 +179,16 @@ namespace WpfProject
             byte* ptrR = (byte*)readBmp.Scan0.ToPointer();
             byte* ptrW = (byte*)writeBmp.Scan0.ToPointer();
 
-            int stride = readBmp.Stride;
-            int length = readBmp.Height * stride;
+            int width = readBmp.Stride;
+            int length = readBmp.Height * width;
 
             int blurrSize = 4;
             int offsetMatSize = (2 * blurrSize + 1) * (2 * blurrSize + 1);
             int[] offsetMatrix = new int[offsetMatSize];
-            BitmapsHandler.CreateOffsetMatrix(out offsetMatrix, blurrSize, stride, pixelFrmTrait);
+            BitmapsHandler.CreateOffsetMatrix(out offsetMatrix, blurrSize, width, stride);
 
-            for(int i = (blurrSize*stride + pixelFrmTrait*blurrSize); 
-                    i < length - (blurrSize * stride + pixelFrmTrait);
+            for(int i = (blurrSize*width + stride*blurrSize); 
+                    i < length - (blurrSize * width + stride);
                     i ++)
             {
                 int mean = 0;
@@ -210,7 +211,7 @@ namespace WpfProject
 
         static public Bitmap Pixelize(Bitmap bmp, PixelFormat format)
         {
-            int pixelFrmTrait = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
+            int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
 
             BitmapData readBmp = BitmapsHandler.LockBits(bmp, ImageLockMode.ReadOnly, format);
             Bitmap blankBmp = new Bitmap(bmp.Width, bmp.Height, format);
@@ -219,20 +220,20 @@ namespace WpfProject
             byte* ptrR = (byte*)readBmp.Scan0.ToPointer();
             byte* ptrW = (byte*)writeBmp.Scan0.ToPointer();
 
-            int stride = readBmp.Stride;
-            int length = readBmp.Height * stride;
+            int width = readBmp.Stride;
+            int length = readBmp.Height * width;
 
             int blurrSize = 36;
 
             int offsetMatSize = (2 * blurrSize + 1) * (2 * blurrSize + 1);
             int[] offsetMatrix = new int[offsetMatSize];
-            BitmapsHandler.CreateOffsetMatrix(out offsetMatrix, blurrSize, stride, pixelFrmTrait);
+            BitmapsHandler.CreateOffsetMatrix(out offsetMatrix, blurrSize, width, stride);
 
-            for (int i = (blurrSize * stride + pixelFrmTrait * blurrSize);
-                    i < length - (blurrSize * stride + pixelFrmTrait);
-                    i+=pixelFrmTrait*(2*blurrSize))
+            for (int i = (blurrSize * width + stride * blurrSize);
+                    i < length - (blurrSize * width + stride);
+                    i+=stride*(2*blurrSize))
             {
-                for (int rgba = 0; rgba < pixelFrmTrait; rgba++)
+                for (int rgba = 0; rgba < stride; rgba++)
                 {
                     int mean = 0;
                     for (int k = 0; k < offsetMatSize; k++)
@@ -248,10 +249,10 @@ namespace WpfProject
                 }
                 
 
-                if((i + pixelFrmTrait * (2 * blurrSize))/stride > i/stride)
+                if((i + stride * (2 * blurrSize))/width > i/width)
                 {
-                    i += ((i / stride ) * stride - i) + 2 * blurrSize * stride + blurrSize * pixelFrmTrait;
-                    i -= pixelFrmTrait * (2 * blurrSize);
+                    i += ((i / width ) * width - i) + 2 * blurrSize * width + blurrSize * stride;
+                    i -= stride * (2 * blurrSize);
                 }
             }
 
@@ -260,5 +261,40 @@ namespace WpfProject
 
             return blankBmp;
         }
+    
+        static public Bitmap MedianFilter(Bitmap bmp, PixelFormat format)
+        {
+            int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
+
+            BitmapData read = BitmapsHandler.LockBits(bmp, ImageLockMode.ReadOnly, format);
+            Bitmap result = new Bitmap(bmp.Width, bmp.Height, format);
+            BitmapData write = BitmapsHandler.LockBits(result, ImageLockMode.WriteOnly, format);
+
+            byte* ptrR = (byte*)read.Scan0.ToPointer();
+            byte* ptrW = (byte*)write.Scan0.ToPointer();
+
+            int width = read.Stride;
+            int length = width * read.Height;
+
+            int[] offsetMat;
+            BitmapsHandler.CreateOffsetMatrix(out offsetMat, 1, width, stride);
+            
+            for (int i=width+stride; i<length-width-stride; i++)
+            {
+                int[] values = new int[9];
+                for (int k = 0; k < 9; k++)
+                    values[k] = (ptrR[i + offsetMat[k]]);
+
+                Array.Sort(values);
+
+                ptrW[i] = (byte)values[4];
+            }
+
+            bmp.UnlockBits(read);
+            result.UnlockBits(write);
+
+            return result;
+        }
+    
     }
 }

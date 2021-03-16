@@ -11,14 +11,14 @@ namespace WpfProject
         public static BitmapData LockBits(Bitmap bmp, ImageLockMode LockMode = ImageLockMode.ReadWrite, PixelFormat format = PixelFormat.Format32bppArgb)
             => bmp.LockBits(new Rectangle(Point.Empty, bmp.Size), LockMode, format);
 
-        public static void CreateOffsetMatrix(out int[] Matrix, int size, int stride, int pixelFrmTrait)
+        public static void CreateOffsetMatrix(out int[] Matrix, int size, int width, int stride)
         {
             int sizeStride = 2 * size + 1;
             int[] matrix = new int[sizeStride * sizeStride];
 
             for(int i=(-size), k=0; i<=size; i++)
-                for(int j=-(size*pixelFrmTrait); j<=size * pixelFrmTrait; j+=pixelFrmTrait, k++)  
-                    matrix[k] = i * stride + j;
+                for(int j=-(size*stride); j<=size * stride; j+=stride, k++)  
+                    matrix[k] = i * width + j;
                           
             Matrix = matrix;
         }
