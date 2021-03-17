@@ -26,6 +26,7 @@
             <RowDefinition Height="20"/>
             <RowDefinition Height="20"/>
             <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
@@ -36,6 +37,7 @@
         <Button Content="Clear Filters" Grid.Column="1"  Grid.Row="4" Height="20" Click="ClearFilters_button" />
         <Button Content="Pixelize" Grid.Column="1"  Grid.Row="5" Height="20" Click="Pixelize_button" />
         <Button Content="Median" Grid.Column="1"  Grid.Row="6" Height="20" Click="Median_button" />
+        <Button Content="Edge Detection" Grid.Column="1"  Grid.Row="7" Height="20" Click="Sobel_button" />
 
     </Grid>
 

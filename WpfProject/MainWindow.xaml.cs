@@ -42,13 +42,13 @@ namespace WpfProject
         }
 
         private void Otsu_button(object sender, RoutedEventArgs e) =>
-            this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.OtsuBinarizationBCV(mainImBitmap, PixelFormat.Format32bppPArgb));
+            this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.OtsuBinarizationBCV(mainImBitmap, PixelFormat.Format24bppRgb));
         
         private void Grayscale_button(object sender, RoutedEventArgs e) =>
-            this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.GrayScale(mainImBitmap, PixelFormat.Format32bppPArgb));
+            this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.GrayScale(mainImBitmap, PixelFormat.Format24bppRgb));
         
         private void Blurr_button(object sender, RoutedEventArgs e) => 
-           this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.Blurr(mainImBitmap, PixelFormat.Format32bppPArgb));
+           this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.Blurr(mainImBitmap, PixelFormat.Format24bppRgb, 1));
         
         private void ClearFilters_button(object sender, RoutedEventArgs e)
         {
@@ -57,10 +57,12 @@ namespace WpfProject
         }
 
         private void Pixelize_button(object sender, RoutedEventArgs e) =>
-           this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.Pixelize(mainImBitmap, PixelFormat.Format32bppPArgb));
+           this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.Pixelize(mainImBitmap, PixelFormat.Format24bppRgb));
         
         private void Median_button(object sender, RoutedEventArgs e) => 
            this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.MedianFilter(mainImBitmap, PixelFormat.Format24bppRgb));
-        
+
+        private void Sobel_button(object sender, RoutedEventArgs e) =>
+           this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.EdgeDetection(mainImBitmap, PixelFormat.Format24bppRgb));
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Text;
+using System.Windows.Documents.Serialization;
 
 namespace WpfProject
 {
@@ -21,6 +22,23 @@ namespace WpfProject
                     matrix[k] = i * width + j;
                           
             Matrix = matrix;
+        }
+
+        public unsafe static Bitmap FillWithColor(Bitmap bmp, Color color, PixelFormat format)
+        {
+            int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
+            BitmapData write = LockBits(bmp, ImageLockMode.WriteOnly, format);
+            byte* ptr = (byte*)write.Scan0.ToPointer();
+
+            for (int i = 0; i < write.Stride * write.Height; i += stride)
+            {
+                ptr[i] = color.R;
+                ptr[i + 1] = color.G;
+                ptr[i + 2] = color.B;
+            }
+
+            bmp.UnlockBits(write);
+            return bmp;
         }
     }
 }
