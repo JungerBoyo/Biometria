@@ -63,6 +63,10 @@ namespace WpfProject
            this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.MedianFilter(mainImBitmap, PixelFormat.Format24bppRgb));
 
         private void Sobel_button(object sender, RoutedEventArgs e) =>
-           this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.EdgeDetection(mainImBitmap, PixelFormat.Format24bppRgb));
+           this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.EdgeDetection(mainImBitmap, PixelFormat.Format24bppRgb, Kernel.SOBEL));
+
+        private void Perwitt_button(object sender, RoutedEventArgs e) =>
+            this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.EdgeDetection(mainImBitmap, PixelFormat.Format24bppRgb, Kernel.PERWITT));
+        
     }
 }

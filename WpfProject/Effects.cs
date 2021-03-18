@@ -15,9 +15,9 @@ using System.Xml.Schema;
 
 namespace WpfProject
 {
+    public enum Kernel { PERWITT = 1, SOBEL = 2 };
     static public unsafe class Effects
     {
-
         static public Bitmap GrayScale(Bitmap bmp, PixelFormat format)
         {
             int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
@@ -221,7 +221,7 @@ namespace WpfProject
             return result;
         }
     
-        static public Bitmap EdgeDetection(Bitmap bmp, PixelFormat format)
+        static public Bitmap EdgeDetection(Bitmap bmp, PixelFormat format, Kernel kernel)
         {
             int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
 
@@ -242,9 +242,9 @@ namespace WpfProject
 
             int[] kernelX =  
             {
-                 -1, 0, 1,
-                 -2, 0, 2,
-                 -1, 0, 1
+                 -1,      0,      1,
+                 -(int)kernel, 0, (int)kernel,
+                 -1,      0,      1
             };
 
             int[] kernelY =
@@ -281,5 +281,6 @@ namespace WpfProject
 
             return result;
         }
+    
     }
 }
