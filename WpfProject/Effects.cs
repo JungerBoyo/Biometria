@@ -18,6 +18,7 @@ namespace WpfProject
     public enum Kernel { PERWITT = 1, SOBEL = 2 };
     static public unsafe class Effects
     {
+        public delegate float FilteringType(float mean, float std);
         static public Bitmap GrayScale(Bitmap bmp, PixelFormat format)
         {
             int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
@@ -59,11 +60,11 @@ namespace WpfProject
             for (int i = 0; i < 256; i++)
                 weightedHistogramSum += pixelValuesHistogram[i] * i;
 
-            double weightF = 0.0, weightB = 0.0;
-            double weightSumF = 0.0;
+            float weightF = 0.0f, weightB = 0.0f;
+            float weightSumF = 0.0f;
             int pixelValuesHistogramSum = pixelValuesHistogram.Sum();
 
-            double MaxBetweenClassVariance = double.MinValue;
+            float MaxBetweenClassVariance = float.MinValue;
             int bestThreshold = 0;
 
             for(int i = 0; i < 256; i++)
@@ -73,10 +74,10 @@ namespace WpfProject
 
                 weightSumF += i * pixelValuesHistogram[i];
 
-                double meanF = (weightSumF / weightF);
-                double meanB = (weightedHistogramSum - weightSumF) / weightB;
+                float meanF = (weightSumF / weightF);
+                float meanB = (weightedHistogramSum - weightSumF) / weightB;
 
-                double BetweenClassVariance = weightB * weightF * (meanB - meanF) * (meanB - meanF);
+                float BetweenClassVariance = weightB * weightF * (meanB - meanF) * (meanB - meanF);
 
                 if(MaxBetweenClassVariance < BetweenClassVariance)
                 {
@@ -281,6 +282,51 @@ namespace WpfProject
 
             return result;
         }
-    
+
+        public static Bitmap Phanscalar(Bitmap bmp, PixelFormat format, float pow = 2.0f, float q = 10.0f, float ratio = 0.5f, float div = 0.25f)
+            => Niblack(bmp, format,  (mean, std) => mean * (1 + pow * (float)Math.Exp((-q * mean)) + ratio * (std / div - 1)));
+        public static Bitmap Savoula(Bitmap bmp, PixelFormat format, float ratio = 0.5f, float div = 2.0f)
+            => Niblack(bmp, format, (mean, std) => mean * (1 + ratio * (std / div - 1)));
+        static public Bitmap Niblack(Bitmap bmp, PixelFormat format, FilteringType equation = null)
+        {
+            equation ??= (mean, stdDev) => 0.2f * stdDev + mean;
+
+            int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
+
+            BitmapData readBmp = BitmapsHandler.LockBits(bmp, ImageLockMode.ReadOnly, format);
+            Bitmap blankBmp = new Bitmap(bmp.Width, bmp.Height, format);
+            BitmapData writeBmp = BitmapsHandler.LockBits(blankBmp, ImageLockMode.WriteOnly, format);
+
+            byte* ptrR = (byte*)readBmp.Scan0.ToPointer();
+            byte* ptrW = (byte*)writeBmp.Scan0.ToPointer();
+
+            int width = readBmp.Stride;
+            int length = readBmp.Height * width;
+
+            int[] offsetMat;
+            BitmapsHandler.CreateOffsetMatrix(out offsetMat, 1, width, stride);
+
+            for(int i=width+stride; i<length-width-stride; i++)
+            {
+                float mean = 0.0f;
+                float stdDev = 0.0f;
+
+                for (int k = 0; k < 9; k++)
+                    mean += ptrR[i + offsetMat[k]];
+                mean /= 9;
+
+                for (int k = 0; k < 9; k++)
+                    stdDev += (ptrR[i + offsetMat[k]] - mean) * (ptrR[i + offsetMat[k]] - mean);
+                stdDev /= 9;
+
+                ptrW[i] = (equation(mean, stdDev) > ptrR[i]) ? byte.MinValue : byte.MaxValue;
+            }
+
+
+            bmp.UnlockBits(readBmp);
+            blankBmp.UnlockBits(writeBmp);
+
+            return blankBmp;
+        }
     }
 }

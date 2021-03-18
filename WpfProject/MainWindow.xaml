@@ -22,6 +22,9 @@
             <RowDefinition Height="20"/>
             <RowDefinition Height="20"/>
             <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
@@ -34,6 +37,9 @@
         <Button Content="Median" Grid.Column="1"  Grid.Row="6" Height="20" Click="Median_button" />
         <Button Content="Edge Detection Sobel" Grid.Column="1"  Grid.Row="7" Height="20" Click="Sobel_button" />
         <Button Content="Edge Detection Perwitt" Grid.Column="1"  Grid.Row="8" Height="20" Click="Perwitt_button" />
+        <Button Content="Niblack" Grid.Column="1"  Grid.Row="9" Height="20" Click="Niblack_button" />
+        <Button Content="Savoula" Grid.Column="1"  Grid.Row="10" Height="20" Click="Savoula_button" />
+        <Button Content="Phanscalar" Grid.Column="1"  Grid.Row="11" Height="20" Click="Phanscalar_button" />
 
     </Grid>
 

@@ -67,6 +67,14 @@ namespace WpfProject
 
         private void Perwitt_button(object sender, RoutedEventArgs e) =>
             this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.EdgeDetection(mainImBitmap, PixelFormat.Format24bppRgb, Kernel.PERWITT));
-        
+
+        private void Niblack_button(object sender, RoutedEventArgs e) =>
+            this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.Niblack(mainImBitmap, PixelFormat.Format24bppRgb));
+
+        private void Savoula_button(object sender, RoutedEventArgs e) =>
+            this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.Savoula(mainImBitmap, PixelFormat.Format24bppRgb));
+
+        private void Phanscalar_button(object sender, RoutedEventArgs e) =>
+            this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.Phanscalar(mainImBitmap, PixelFormat.Format24bppRgb));
     }
 }
