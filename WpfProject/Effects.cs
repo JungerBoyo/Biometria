@@ -18,19 +18,19 @@ namespace WpfProject
     public enum Kernel { PERWITT = 1, SOBEL = 2 };
     static public unsafe class Effects
     {
-        public delegate float FilteringType(float mean, float std);
+        public delegate float FilterType(float mean, float std);
         static public Bitmap GrayScale(Bitmap bmp, PixelFormat format)
         {
             int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
 
-            BitmapData readwrite = BitmapsHandler.LockBits(bmp, ImageLockMode.ReadWrite);
+            BitmapData readwrite = BitmapsHandler.LockBits(bmp, ImageLockMode.ReadWrite, format);
 
             byte* ptr01 = (byte*)readwrite.Scan0.ToPointer();
 
             int width = readwrite.Stride;
             int bitmapLength = bmp.Height * width;
 
-            for (int i = 0; i < bitmapLength-1; i+=stride)                 
+            for (int i = 0; i < bitmapLength; i+=stride)                 
                 ptr01[i] = ptr01[i + 1] = ptr01[i + 2] = (byte)((ptr01[i] + ptr01[i + 1] + ptr01[i + 2]) / 3);
            
             bmp.UnlockBits(readwrite);
@@ -287,7 +287,7 @@ namespace WpfProject
             => Niblack(bmp, format,  (mean, std) => mean * (1 + pow * (float)Math.Exp((-q * mean)) + ratio * (std / div - 1)));
         public static Bitmap Savoula(Bitmap bmp, PixelFormat format, float ratio = 0.5f, float div = 2.0f)
             => Niblack(bmp, format, (mean, std) => mean * (1 + ratio * (std / div - 1)));
-        static public Bitmap Niblack(Bitmap bmp, PixelFormat format, FilteringType equation = null)
+        static public Bitmap Niblack(Bitmap bmp, PixelFormat format, FilterType equation = null)
         {
             equation ??= (mean, stdDev) => 0.2f * stdDev + mean;
 

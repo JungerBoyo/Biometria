@@ -9,7 +9,7 @@ namespace WpfProject
 {
     static class BitmapsHandler
     {
-        public static BitmapData LockBits(Bitmap bmp, ImageLockMode LockMode = ImageLockMode.ReadWrite, PixelFormat format = PixelFormat.Format32bppArgb)
+        public static BitmapData LockBits(Bitmap bmp, ImageLockMode LockMode, PixelFormat format)
             => bmp.LockBits(new Rectangle(Point.Empty, bmp.Size), LockMode, format);
 
         public static void CreateOffsetMatrix(out int[] Matrix, int size, int width, int stride)

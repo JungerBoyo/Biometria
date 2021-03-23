@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Biometria;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -76,5 +77,8 @@ namespace WpfProject
 
         private void Phanscalar_button(object sender, RoutedEventArgs e) =>
             this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.Phanscalar(mainImBitmap, PixelFormat.Format24bppRgb));
+
+        private void K3M_button(object sender, RoutedEventArgs e) =>
+            this.MainIm.Source = CreateBitmapSource(mainImBitmap = K3M.alg(mainImBitmap, PixelFormat.Format24bppRgb));
     }
 }

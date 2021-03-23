@@ -25,6 +25,7 @@
             <RowDefinition Height="20"/>
             <RowDefinition Height="20"/>
             <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
@@ -40,6 +41,7 @@
         <Button Content="Niblack" Grid.Column="1"  Grid.Row="9" Height="20" Click="Niblack_button" />
         <Button Content="Savoula" Grid.Column="1"  Grid.Row="10" Height="20" Click="Savoula_button" />
         <Button Content="Phanscalar" Grid.Column="1"  Grid.Row="11" Height="20" Click="Phanscalar_button" />
+        <Button Content="K3M" Grid.Column="1"  Grid.Row="12" Height="20" Click="K3M_button" />
 
     </Grid>
 
