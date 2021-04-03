@@ -2,16 +2,86 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Controls;
+using System.Windows.Markup;
 using System.Windows.Shell;
 using WpfProject;
 
 namespace Biometria
 {
-    unsafe static class K3M
-    { 
-        public static Bitmap alg(Bitmap bmp, PixelFormat format)
+    unsafe class Skeletonization
+    {
+        public enum trait { PASSAGE = 3, TIP = 2, CROSS = 5, CUTCROSS = 4 };
+
+        private Dictionary<trait, int> triatDistributionHistogram = new Dictionary<trait, int>()
+        {
+            { trait.PASSAGE, 0 },
+            { trait.TIP, 0 },
+            { trait.CROSS, 0 },
+            { trait.CUTCROSS, 0 }
+        };
+
+        public int GetTraitsCount(trait T)
+        {
+            return triatDistributionHistogram[T];
+        }
+        
+        public Bitmap CrossingNumber(Bitmap bmp, PixelFormat format)
+        {
+            int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
+
+            BitmapData readwrite = BitmapsHandler.LockBits(bmp, ImageLockMode.ReadWrite, format);
+
+            byte* ptr = (byte*)readwrite.Scan0.ToPointer();
+
+            int width = readwrite.Stride;
+            int length = width * readwrite.Height;
+
+            int[] offsetMat;
+            BitmapsHandler.CreateOffsetMatrix(out offsetMat, 1, width, stride);
+
+            for(int i=width+stride; i<length-stride-width; i+=stride)
+            {
+                if(ptr[i] == byte.MinValue)
+                {
+                    int sum = 0;
+                    for (int k = 0; k < 9; k++)
+                        sum += (ptr[i + offsetMat[k]] == byte.MinValue) ? 1 : 0;
+
+                    if(sum < 6 && sum > 1)
+                        triatDistributionHistogram[(trait)sum]++;
+
+                    //debug
+                    //if(sum == 2)
+                    //{
+                    //    ptr[i] = 0;
+                    //    ptr[i + 1] = 255;
+                    //    ptr[i + 2] = 0;
+                    //}
+                    if (sum == 4)
+                    {
+                        ptr[i] = 0;
+                        ptr[i + 1] = 255;
+                        ptr[i + 2] = 0 ;
+                    }
+                    //else if (sum == 5)
+                    //{
+                    //    ptr[i] = 255;
+                    //    ptr[i + 1] = 0;
+                    //    ptr[i + 2] = 0;
+                    //}
+
+                }
+            }
+
+            bmp.UnlockBits(readwrite);
+            return bmp;
+        }
+
+        #region K3M
+        public static Bitmap K3M(Bitmap bmp, PixelFormat format)
         {
             int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
 
@@ -82,7 +152,7 @@ namespace Biometria
                     for (int k = 0; k < 9; k++)
                         sum += (ptr[i + offsetMat[k]] == fGround) ? edgeWeights[k] : 0;
 
-                    if (Array.Exists(P0, x => (x == sum)))                
+                    if (Array.Exists(P0, x => (x == sum)))    // P0 to tablica z fazy zerowej             
                         ptr[i] = ptr[i + 1] = ptr[i + 2] = bGround;              
                 }
             }
@@ -117,5 +187,7 @@ namespace Biometria
         static private readonly int[] P3 = { 7, 14, 15, 28, 30, 31, 56, 60, 62, 112, 120, 124, 131, 135, 143, 193, 195, 199, 224, 225, 227, 240, 241, 248 };
         static private readonly int[] P4 = { 7, 14, 15, 28, 30, 31, 56, 60, 62, 63, 112, 120, 124, 126, 131, 135, 143, 159, 193, 195, 199, 207, 224, 225, 227, 231, 240, 241, 243, 248, 249, 252 };
         static private readonly int[] P5 = { 7, 14, 15, 28, 30, 31, 56, 60, 62, 63, 112, 120, 124, 126, 131, 135, 143, 159, 191, 193, 195, 199, 207, 224, 225, 227, 231, 239, 240, 241, 243, 248, 249, 251, 252, 254 };
+
+        #endregion
     }
 }

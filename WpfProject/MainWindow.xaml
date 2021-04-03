@@ -8,40 +8,53 @@
         Title="MainWindow" Height="1000" Width="1000">
     
     <Grid>
+
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="500"/>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="700"/>
         </Grid.ColumnDefinitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="500"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
+        <Image Name="MainIm" Width="700" Height="700" Grid.Column="1" Grid.Row="14" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
-        <Image Name="MainIm" Width="500" Height="500" Grid.Column="0" Grid.Row="0"/>
-        <Button Content="Otsu" Grid.Column="1"  Grid.Row="1" Height="20" Click="Otsu_button"/>
-        <Button Content="Grayscale" Grid.Column="1"  Grid.Row="2" Height="20" Click="Grayscale_button" />
-        <Button Content="Blur" Grid.Column="1"  Grid.Row="3" Height="20" Click="Blurr_button" />
-        <Button Content="Clear Filters" Grid.Column="1"  Grid.Row="4" Height="20" Click="ClearFilters_button" />
-        <Button Content="Pixelize" Grid.Column="1"  Grid.Row="5" Height="20" Click="Pixelize_button" />
-        <Button Content="Median" Grid.Column="1"  Grid.Row="6" Height="20" Click="Median_button" />
-        <Button Content="Edge Detection Sobel" Grid.Column="1"  Grid.Row="7" Height="20" Click="Sobel_button" />
-        <Button Content="Edge Detection Perwitt" Grid.Column="1"  Grid.Row="8" Height="20" Click="Perwitt_button" />
-        <Button Content="Niblack" Grid.Column="1"  Grid.Row="9" Height="20" Click="Niblack_button" />
-        <Button Content="Savoula" Grid.Column="1"  Grid.Row="10" Height="20" Click="Savoula_button" />
-        <Button Content="Phanscalar" Grid.Column="1"  Grid.Row="11" Height="20" Click="Phanscalar_button" />
-        <Button Content="K3M" Grid.Column="1"  Grid.Row="12" Height="20" Click="K3M_button" />
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <Button Content="Otsu" Grid.Column="0"  Grid.Row="1" Height="20" Click="Otsu_button"/>
+            <Button Content="Grayscale" Grid.Column="0"  Grid.Row="2" Height="20" Click="Grayscale_button" />
+            <Button Content="Blur" Grid.Column="0"  Grid.Row="3" Height="20" Click="Blurr_button" />
+            <Button Content="Clear Filters" Grid.Column="0"  Grid.Row="4" Height="20" Click="ClearFilters_button" />
+            <Button Content="Pixelize" Grid.Column="0"  Grid.Row="5" Height="20" Click="Pixelize_button" />
+            <Button Content="Median" Grid.Column="0"  Grid.Row="6" Height="20" Click="Median_button" />
+            <Button Content="Edge Detection Sobel" Grid.Column="0"  Grid.Row="7" Height="20" Click="Sobel_button" />
+            <Button Content="Edge Detection Perwitt" Grid.Column="0"  Grid.Row="8" Height="20" Click="Perwitt_button" />
+            <Button Content="Niblack" Grid.Column="0"  Grid.Row="9" Height="20" Click="Niblack_button" />
+            <Button Content="Savoula" Grid.Column="0"  Grid.Row="10" Height="20" Click="Savoula_button" />
+            <Button Content="Phanscalar" Grid.Column="0"  Grid.Row="11" Height="20" Click="Phanscalar_button" />
+            <Button Content="K3M" Grid.Column="0"  Grid.Row="12" Height="20" Click="K3M_button" />
+            <Button Content="Crossing Number" Grid.Column="0"  Grid.Row="0" Height="20" Click="crossing_button" />
+            <Button Content="Mosaic Filter" Grid.Column="0"  Grid.Row="13" Height="20" Click="mosaic_button" />
+            <Button Content="Clasterization" Grid.Column="0"  Grid.Row="14" Height="20" Click="claster_button" />
+            
+       </Grid>
+
+       
 
     </Grid>
 

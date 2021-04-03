@@ -1,27 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
-using System.Security.Permissions;
-using System.Text;
-using System.Transactions;
-using System.Windows.Automation.Peers;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Navigation;
-using System.Xml.Schema;
 
 namespace WpfProject
 {
     public enum Kernel { PERWITT = 1, SOBEL = 2 };
+
+    public struct color
+    {
+        public color(byte r, byte g, byte b)
+        {
+            R = r;
+            G = g;
+            B = b;
+        }
+
+        public byte R, G, B;
+    };
     static public unsafe class Effects
     {
         public delegate float FilterType(float mean, float std);
-        static public Bitmap GrayScale(Bitmap bmp, PixelFormat format)
+        static public Bitmap GrayScale(Bitmap bmp, System.Drawing.Imaging.PixelFormat format)
         {
-            int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
+            int stride = (format == System.Drawing.Imaging.PixelFormat.Format32bppPArgb || format == System.Drawing.Imaging.PixelFormat.Format32bppArgb) ? 4 : 3;
 
             BitmapData readwrite = BitmapsHandler.LockBits(bmp, ImageLockMode.ReadWrite, format);
 
@@ -37,9 +40,9 @@ namespace WpfProject
             return bmp;
         }
 
-        static public Bitmap OtsuBinarizationBCV(Bitmap bmp, PixelFormat format)
+        static public Bitmap OtsuBinarizationBCV(Bitmap bmp, System.Drawing.Imaging.PixelFormat format)
         {
-            int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
+            int stride = (format == System.Drawing.Imaging.PixelFormat.Format32bppPArgb || format == System.Drawing.Imaging.PixelFormat.Format32bppArgb) ? 4 : 3;
 
             bmp = GrayScale(bmp, format);
 
@@ -93,9 +96,9 @@ namespace WpfProject
             return bmp;
         }
     
-        static public Bitmap Blurr(Bitmap bmp, PixelFormat format, int force)
+        static public Bitmap Blurr(Bitmap bmp, System.Drawing.Imaging.PixelFormat format, int force)
         {
-            int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
+            int stride = (format == System.Drawing.Imaging.PixelFormat.Format32bppPArgb || format == System.Drawing.Imaging.PixelFormat.Format32bppArgb) ? 4 : 3;
 
             BitmapData readBmp = BitmapsHandler.LockBits(bmp, ImageLockMode.ReadOnly, format);
             Bitmap blankBmp = new Bitmap(bmp.Width, bmp.Height, format);
@@ -135,9 +138,9 @@ namespace WpfProject
             return blankBmp; 
         }
 
-        static public Bitmap Pixelize(Bitmap bmp, PixelFormat format)
+        static public Bitmap Pixelize(Bitmap bmp, System.Drawing.Imaging.PixelFormat format)
         {
-            int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
+            int stride = (format == System.Drawing.Imaging.PixelFormat.Format32bppPArgb || format == System.Drawing.Imaging.PixelFormat.Format32bppArgb) ? 4 : 3;
 
             BitmapData readBmp = BitmapsHandler.LockBits(bmp, ImageLockMode.ReadOnly, format);
             Bitmap blankBmp = new Bitmap(bmp.Width, bmp.Height, format);
@@ -188,9 +191,9 @@ namespace WpfProject
             return blankBmp;
         }
     
-        static public Bitmap MedianFilter(Bitmap bmp, PixelFormat format)
+        static public Bitmap MedianFilter(Bitmap bmp, System.Drawing.Imaging.PixelFormat format)
         {
-            int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
+            int stride = (format == System.Drawing.Imaging.PixelFormat.Format32bppPArgb || format == System.Drawing.Imaging.PixelFormat.Format32bppArgb) ? 4 : 3;
 
             BitmapData read = BitmapsHandler.LockBits(bmp, ImageLockMode.ReadOnly, format);
             Bitmap result = new Bitmap(bmp.Width, bmp.Height, format);
@@ -222,9 +225,9 @@ namespace WpfProject
             return result;
         }
     
-        static public Bitmap EdgeDetection(Bitmap bmp, PixelFormat format, Kernel kernel)
+        static public Bitmap EdgeDetection(Bitmap bmp, System.Drawing.Imaging.PixelFormat format, Kernel kernel)
         {
-            int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
+            int stride = (format == System.Drawing.Imaging.PixelFormat.Format32bppPArgb || format == System.Drawing.Imaging.PixelFormat.Format32bppArgb) ? 4 : 3;
 
             bmp = Blurr(bmp, format, 1);
 
@@ -283,15 +286,15 @@ namespace WpfProject
             return result;
         }
 
-        public static Bitmap Phanscalar(Bitmap bmp, PixelFormat format, float pow = 2.0f, float q = 10.0f, float ratio = 0.5f, float div = 0.25f)
+        public static Bitmap Phanscalar(Bitmap bmp, System.Drawing.Imaging.PixelFormat format, float pow = 2.0f, float q = 10.0f, float ratio = 0.5f, float div = 0.25f)
             => Niblack(bmp, format,  (mean, std) => mean * (1 + pow * (float)Math.Exp((-q * mean)) + ratio * (std / div - 1)));
-        public static Bitmap Savoula(Bitmap bmp, PixelFormat format, float ratio = 0.5f, float div = 2.0f)
+        public static Bitmap Savoula(Bitmap bmp, System.Drawing.Imaging.PixelFormat format, float ratio = 0.5f, float div = 2.0f)
             => Niblack(bmp, format, (mean, std) => mean * (1 + ratio * (std / div - 1)));
-        static public Bitmap Niblack(Bitmap bmp, PixelFormat format, FilterType equation = null)
+        static public Bitmap Niblack(Bitmap bmp, System.Drawing.Imaging.PixelFormat format, FilterType equation = null)
         {
             equation ??= (mean, stdDev) => 0.2f * stdDev + mean;
 
-            int stride = (format == PixelFormat.Format32bppPArgb || format == PixelFormat.Format32bppArgb) ? 4 : 3;
+            int stride = (format == System.Drawing.Imaging.PixelFormat.Format32bppPArgb || format == System.Drawing.Imaging.PixelFormat.Format32bppArgb) ? 4 : 3;
 
             BitmapData readBmp = BitmapsHandler.LockBits(bmp, ImageLockMode.ReadOnly, format);
             Bitmap blankBmp = new Bitmap(bmp.Width, bmp.Height, format);
@@ -328,5 +331,153 @@ namespace WpfProject
 
             return blankBmp;
         }
+    
+        static public Bitmap Mosaic(Bitmap bmp, System.Drawing.Imaging.PixelFormat format)
+        {
+            int stride = (format == System.Drawing.Imaging.PixelFormat.Format32bppPArgb || format == System.Drawing.Imaging.PixelFormat.Format32bppArgb) ? 4 : 3;
+
+            BitmapData read = BitmapsHandler.LockBits(bmp, ImageLockMode.ReadOnly, format);
+            Bitmap result = new Bitmap(bmp.Width, bmp.Height, format);
+            BitmapData write = BitmapsHandler.LockBits(result, ImageLockMode.WriteOnly, format);
+
+            byte* ptrR = (byte*)read.Scan0.ToPointer();
+            byte* ptrW = (byte*)write.Scan0.ToPointer();
+
+            int width = read.Stride;
+            int length = width * read.Height;
+
+            int[] offsetMat;
+            BitmapsHandler.CreateOffsetMatrix(out offsetMat, 1, width, stride);
+
+            Random rnd = new Random();
+
+            bool[] pixels = new bool[length];
+
+            for(int i=0; i<length; i+=stride)
+            {
+                byte[] rndb = new byte[3];
+                rnd.NextBytes(rndb);
+
+                if(pixels[i] == false)
+                    claster(i, ptrR[i], rndb);
+            }
+             
+            void claster(int offset, byte color, byte[] set)
+            {
+                if ( pixels[offset] == true )
+                    return;
+
+                if (ptrR[offset] != color)
+                    return;
+                else
+                {
+                    ptrW[offset + 0] = set[0];
+                    ptrW[offset + 1] = set[1];
+                    ptrW[offset + 2] = set[2];
+                }
+
+                pixels[offset] = true;
+
+                if (offset - width  > 0     ) claster(offset - width,  color, set);
+                if (offset + width  < length) claster(offset + width,  color, set);
+                if (offset + stride < length) claster(offset + stride, color, set);
+                if (offset - stride > 0     ) claster(offset - stride, color, set);
+
+                if (offset - width  - stride > 0     ) claster(offset - width  - stride, color, set);
+                if (offset + width  - stride < length) claster(offset + width  - stride, color, set);
+                if (offset + stride + width  < length) claster(offset + stride + width,  color, set);
+                if (offset + stride - width  > 0     ) claster(offset + stride - width,  color, set);
+            }
+
+
+            bmp.UnlockBits(read);
+            result.UnlockBits(write);
+
+            return result;
+        }
+
+        static public Bitmap Clasterization(Bitmap bmp, System.Drawing.Imaging.PixelFormat format)
+        {
+            int stride = (format == System.Drawing.Imaging.PixelFormat.Format32bppPArgb || format == System.Drawing.Imaging.PixelFormat.Format32bppArgb) ? 4 : 3;
+
+            BitmapData read = BitmapsHandler.LockBits(bmp, ImageLockMode.ReadOnly, format);
+            Bitmap result = new Bitmap(bmp.Width, bmp.Height, format);
+            BitmapData write = BitmapsHandler.LockBits(result, ImageLockMode.WriteOnly, format);
+
+            byte* ptrR = (byte*)read.Scan0.ToPointer();
+            byte* ptrW = (byte*)write.Scan0.ToPointer();
+
+            int width = read.Stride;
+            int length = width * read.Height;
+
+            int[] offsetMat;
+            BitmapsHandler.CreateOffsetMatrix(out offsetMat, 1, width, stride);
+
+            Dictionary<color, List<int>> offsets = new Dictionary<color, List<int>>();               
+            bool[] pixels = new bool[length];
+
+            for (int i = 0; i < length; i += stride)
+            {              
+                if (pixels[i] == false)
+                    claster(i, ptrR[i]);
+            }
+
+            
+            void claster(int offset, byte color)
+            {
+                if (pixels[offset] == true)
+                    return;
+
+                if (ptrR[offset] != color)
+                    return;
+                else
+                {
+                    color c = new color(ptrR[offset], ptrR[offset + 1], ptrR[offset + 2]);
+
+                    if(offsets.ContainsKey(c))               
+                        offsets[c].Add(offset);
+                    else
+                    {
+                        offsets.Add(c, new List<int>());
+                        offsets[c].Add(offset);
+                    }                
+                }
+
+                pixels[offset] = true;
+
+                if (offset - width > 0) claster(offset - width, color);
+                if (offset + width < length) claster(offset + width, color);
+                if (offset + stride < length) claster(offset + stride, color);
+                if (offset - stride > 0) claster(offset - stride, color);
+
+                if (offset - width - stride > 0) claster(offset - width - stride, color);
+                if (offset + width - stride < length) claster(offset + width - stride, color);
+                if (offset + stride + width < length) claster(offset + stride + width, color);
+                if (offset + stride - width > 0) claster(offset + stride - width, color);
+            }
+
+            Random rnd = new Random();     
+
+            foreach(var list in offsets)
+            {
+                byte[] c = new byte[3];
+                rnd.NextBytes(c);
+
+                for(int i=0; i<list.Value.Count(); i++)
+                {
+                    ptrW[list.Value[i] + 0] = c[0];
+                    ptrW[list.Value[i] + 1] = c[1];
+                    ptrW[list.Value[i] + 2] = c[2];
+                }
+            }
+
+
+            bmp.UnlockBits(read);
+            result.UnlockBits(write);
+
+            return result;
+        }
+
+
     }
 }

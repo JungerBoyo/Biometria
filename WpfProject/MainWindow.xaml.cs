@@ -56,7 +56,6 @@ namespace WpfProject
             this.MainIm.Source = CreateBitmapSource(mainImBitmapCopy);
             this.mainImBitmap = new Bitmap(mainImBitmapCopy);
         }
-
         private void Pixelize_button(object sender, RoutedEventArgs e) =>
            this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.Pixelize(mainImBitmap, PixelFormat.Format24bppRgb));
         
@@ -79,6 +78,25 @@ namespace WpfProject
             this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.Phanscalar(mainImBitmap, PixelFormat.Format24bppRgb));
 
         private void K3M_button(object sender, RoutedEventArgs e) =>
-            this.MainIm.Source = CreateBitmapSource(mainImBitmap = K3M.alg(mainImBitmap, PixelFormat.Format24bppRgb));
+            this.MainIm.Source = CreateBitmapSource(mainImBitmap = Skeletonization.K3M(mainImBitmap, PixelFormat.Format24bppRgb));
+
+        private void crossing_button(object sender, RoutedEventArgs e)
+        {
+            Skeletonization histogram = new Skeletonization();
+            this.MainIm.Source = CreateBitmapSource(mainImBitmap = histogram.CrossingNumber(mainImBitmap, PixelFormat.Format24bppRgb));
+
+            File.WriteAllText("histogramTraits.txt", 
+                $"CROSSES  ::  {histogram.GetTraitsCount(Skeletonization.trait.CROSS)}\n"+
+                $"CUTCROSSES  ::  {histogram.GetTraitsCount(Skeletonization.trait.CUTCROSS)}\n"+
+                $"TIPS  ::  {histogram.GetTraitsCount(Skeletonization.trait.TIP)}\n"+
+                $"PASSAGES  ::  {histogram.GetTraitsCount(Skeletonization.trait.PASSAGE)}\n"
+                );
+        }
+
+        private void mosaic_button(object sender, RoutedEventArgs e) =>  
+            this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.Mosaic(mainImBitmap, PixelFormat.Format24bppRgb));
+
+        private void claster_button(object sender, RoutedEventArgs e) =>
+             this.MainIm.Source = CreateBitmapSource(mainImBitmap = Effects.Clasterization(mainImBitmap, PixelFormat.Format24bppRgb));
     }
 }
