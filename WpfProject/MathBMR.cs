@@ -7,7 +7,7 @@ using System.Windows.Navigation;
 
 namespace WpfProject
 {
-    public class Math
+    public class MathBMR
     {
         public double Mean(double[] values) 
             => (values.Sum() / values.Length);
